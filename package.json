@@ -5,6 +5,11 @@
   "dependencies": {
     "aws-sdk": "^2.1657.0",
     "express": "^4.19.2",
-    "serverless-http": "^3.2.0"
+    "serverless-http": "^3.2.0",
+    "serverless-offline": "^13.6.0"
+  },
+  "devDependencies": {
+    "serverless-plugin-common-excludes": "^4.0.0",
+    "serverless-plugin-include-dependencies": "^6.1.0"
   }
 }

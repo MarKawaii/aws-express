@@ -12,6 +12,11 @@ provider:
       Resource:
         - arn:aws:dynamodb:us-east-1:601134614454:table/CompensacionesTableNew ## permite almacenar informaicion en la tabla
 
+plugins:
+  - serverless-offline # para instalar este plugins son nesesarios los siguiente 2 o si no se se hara el deploy
+  - serverless-plugin-common-excludes
+  - serverless-plugin-include-dependencies
+
 functions:
   api:
     handler: handler.handler
