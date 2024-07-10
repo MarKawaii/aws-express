@@ -1,9 +1,13 @@
 var express = require("express");
 var router = express.Router();
-var AWS = require("aws-sdk");
+// var AWS = require("aws-sdk");
 
 router.post("/api/compensaciones/cargar-compensaciones", async (req, res) => {
     const dynamodb = new AWS.DynamoDB.DocumentClient();
+
+    // const Conexion = require('../../config/conexion.js');
+    // const dynamodb = new Conexion();
+
     try {
         const { id_sap, compensaciones } = req.body;
         const idSapString = id_sap.toString();
@@ -16,7 +20,7 @@ router.post("/api/compensaciones/cargar-compensaciones", async (req, res) => {
         ];
 
         const filtrarCampos = (compensacion) => {
-            let objetoFiltrado = {id: compensacion.id};  // Comenzar el objeto filtrado con el campo 'id'
+            let objetoFiltrado = { id: compensacion.id };  // Comenzar el objeto filtrado con el campo 'id'
             camposPermitidos.forEach(key => {
                 if (key !== 'id' && compensacion.hasOwnProperty(key)) {
                     objetoFiltrado[key] = compensacion[key];
@@ -39,7 +43,7 @@ router.post("/api/compensaciones/cargar-compensaciones", async (req, res) => {
         }
 
         const result = await dynamodb.get({
-            TableName: "CompensacionesTableNew",
+            TableName: process.env.COMPENSACIONES_AGNO_TABLE,
             Key: { id_sap: idSapString }
         }).promise();
 
@@ -71,7 +75,7 @@ router.post("/api/compensaciones/cargar-compensaciones", async (req, res) => {
             if (updates) {
                 item.updatedAt = createdAt;
                 await dynamodb.put({
-                    TableName: "CompensacionesTableNew",
+                    TableName: process.env.COMPENSACIONES_AGNO_TABLE,
                     Item: item
                 }).promise();
                 res.json({ message: "Compensaciones actualizadas exitosamente" });
@@ -85,7 +89,7 @@ router.post("/api/compensaciones/cargar-compensaciones", async (req, res) => {
                 ...compensacionesFiltradas
             };
             await dynamodb.put({
-                TableName: "CompensacionesTableNew",
+                TableName: process.env.COMPENSACIONES_AGNO_TABLE,
                 Item: item
             }).promise();
             res.json({ message: "Nuevo registro de compensaciones creado exitosamente" });

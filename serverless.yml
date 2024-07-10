@@ -1,6 +1,9 @@
 org: markawaii
 service: aws-express
 
+custom:
+  tableCompensacionesAgnos: 'compensaciones-agno-table' ## esto se asignara en provider y en el nombre de la tabla
+
 provider:
   name: aws
   runtime: nodejs20.x
@@ -10,10 +13,12 @@ provider:
       Action:
         - dynamodb:*
       Resource:
-        - arn:aws:dynamodb:us-east-1:601134614454:table/CompensacionesTableNew ## permite almacenar informaicion en la tabla
+        - arn:aws:dynamodb:us-east-1:601134614454:table/${self:custom.tableCompensacionesAgnos} ## permite almacenar y modificar información en la tabla
+  environment:
+    COMPENSACIONES_AGNO_TABLE: ${self:custom.tableCompensacionesAgnos}
 
 plugins:
-  - serverless-offline # para instalar este plugins son nesesarios los siguiente 2 o si no se se hara el deploy
+  - serverless-offline # para instalar este plugins son necesarios los siguiente 2 o si no se hará el deploy
   - serverless-plugin-common-excludes
   - serverless-plugin-include-dependencies
 
@@ -28,8 +33,8 @@ resources:
     CompensacionesTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: CompensacionesTableNew ## nombre de la tabla que estamos creando
-        BillingMode: PAY_PER_REQUEST ## cobra por la cantidad de peticiones realizadas
+        TableName: ${self:custom.tableCompensacionesAgnos}  # Nombre actualizado de la tabla
+        BillingMode: PAY_PER_REQUEST  # Cobra por la cantidad de peticiones realizadas
         AttributeDefinitions:
           - AttributeName: id_sap
             AttributeType: S
