@@ -28,7 +28,7 @@ plugins:
 functions:
   api:
     handler: handler.handler
-    timeout: 30  # Increasing timeout to 30 seconds
+    # timeout: 30  # Increasing timeout to 30 secondsn # verificar porque falla al hacer el deploy
     events:
       - httpApi: "*"
 
