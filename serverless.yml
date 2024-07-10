@@ -24,7 +24,7 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: CompensacionesTableNew
-        BillingMode: PAY_PER_REQUEST  ## cobra por la cantidad de peticiones realizadas
+        BillingMode: PAY_PER_REQUEST ## cobra por la cantidad de peticiones realizadas
         AttributeDefinitions:
           - AttributeName: id_sap
             AttributeType: S

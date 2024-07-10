@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-var AWS = require("aws-sdk");  
+var AWS = require("aws-sdk");
 
 router.post("/api/compensaciones/cargar-compensaciones", async (req, res) => {
     const dynamodb = new AWS.DynamoDB.DocumentClient();
