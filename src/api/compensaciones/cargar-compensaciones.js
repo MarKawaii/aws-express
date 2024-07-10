@@ -5,7 +5,7 @@ var AWS = require("aws-sdk");
 router.post("/api/compensaciones/cargar-compensaciones", async (req, res) => {
     const dynamodb = new AWS.DynamoDB.DocumentClient();
     try {
-        const { id_sap, compensaciones } = req.body;  // Usar req.body en lugar de event.body
+        const { id_sap, compensaciones } = req.body;
         const idSapString = id_sap.toString();
 
         const camposPermitidos = [
@@ -16,32 +16,31 @@ router.post("/api/compensaciones/cargar-compensaciones", async (req, res) => {
         ];
 
         const filtrarCampos = (compensacion) => {
-            return Object.keys(compensacion)
-                .filter(key => camposPermitidos.includes(key))
-                .reduce((obj, key) => {
-                    obj[key] = compensacion[key];
-                    return obj;
-                }, {});
+            let objetoFiltrado = {id: compensacion.id};  // Comenzar el objeto filtrado con el campo 'id'
+            camposPermitidos.forEach(key => {
+                if (key !== 'id' && compensacion.hasOwnProperty(key)) {
+                    objetoFiltrado[key] = compensacion[key];
+                }
+            });
+            return objetoFiltrado;
         };
 
         const compensacionesFiltradas = {};
-        const newCompIds = new Set();  // Set para manejar los IDs en la carga actual
+        const newCompIds = new Set();
         for (const [year, comps] of Object.entries(compensaciones)) {
             compensacionesFiltradas[year] = comps.map(filtrarCampos).filter(comp => {
                 if (newCompIds.has(comp.id)) {
                     console.log(`ID duplicado en la carga actual encontrado y omitido: ${comp.id}`);
-                    return false;  // Omitir si ya está en el set
+                    return false;
                 }
                 newCompIds.add(comp.id);
-                return true;  // Agregar si no está duplicado
+                return true;
             });
         }
 
         const result = await dynamodb.get({
             TableName: "CompensacionesTableNew",
-            Key: {
-                id_sap: idSapString
-            }
+            Key: { id_sap: idSapString }
         }).promise();
 
         let item;
@@ -75,7 +74,6 @@ router.post("/api/compensaciones/cargar-compensaciones", async (req, res) => {
                     TableName: "CompensacionesTableNew",
                     Item: item
                 }).promise();
-
                 res.json({ message: "Compensaciones actualizadas exitosamente" });
             } else {
                 res.status(400).json({ message: "No se realizaron cambios; todos los IDs de las compensaciones ya existían" });
@@ -86,12 +84,10 @@ router.post("/api/compensaciones/cargar-compensaciones", async (req, res) => {
                 createdAt: createdAt,
                 ...compensacionesFiltradas
             };
-
             await dynamodb.put({
                 TableName: "CompensacionesTableNew",
                 Item: item
             }).promise();
-
             res.json({ message: "Nuevo registro de compensaciones creado exitosamente" });
         }
     } catch (error) {
