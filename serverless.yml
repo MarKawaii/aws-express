@@ -10,7 +10,7 @@ provider:
       Action:
         - dynamodb:*
       Resource:
-        - arn:aws:dynamodb:us-east-1:601134614454:table/CompensacionesTableNew
+        - arn:aws:dynamodb:us-east-1:601134614454:table/CompensacionesTableNew ## permite almacenar informaicion en la tabla
 
 functions:
   api:
@@ -23,7 +23,7 @@ resources:
     CompensacionesTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: CompensacionesTableNew
+        TableName: CompensacionesTableNew ## nombre de la tabla que estamos creando
         BillingMode: PAY_PER_REQUEST ## cobra por la cantidad de peticiones realizadas
         AttributeDefinitions:
           - AttributeName: id_sap
