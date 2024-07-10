@@ -18,9 +18,12 @@ provider:
     COMPENSACIONES_AGNO_TABLE: ${self:custom.tableCompensacionesAgnos}
 
 plugins:
-  - serverless-offline # para instalar este plugins son necesarios los siguiente 2 o si no se hará el deploy
-  - serverless-plugin-common-excludes
-  - serverless-plugin-include-dependencies
+  - serverless-offline
+  - serverless-plugin-common-excludes # El plugin 'serverless-offline' depende de este
+  - serverless-plugin-include-dependencies # El plugin 'serverless-offline' depende de este
+  # - serverless-dynamodb
+  # - serverless-dynamodb-local
+  
 
 functions:
   api:
