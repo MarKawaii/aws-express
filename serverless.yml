@@ -19,17 +19,19 @@ provider:
 
 plugins:
   - serverless-offline
-  - serverless-plugin-common-excludes # El plugin 'serverless-offline' depende de este
-  - serverless-plugin-include-dependencies # El plugin 'serverless-offline' depende de este
-  # - serverless-dynamodb
   # - serverless-dynamodb-local
+  # - serverless-dynamodb
+  - serverless-plugin-common-excludes # Se instala el plugin serverless-plugin-common-excludes que reduce el tamaño de los paquetes, lo cual tambien soluciona el problema de los deploy
+  - serverless-plugin-include-dependencies # El plugin 'serverless-offline' depende de este
   
 
 functions:
   api:
     handler: handler.handler
+    timeout: 30  # Increasing timeout to 30 seconds
     events:
       - httpApi: "*"
+
 
 resources:
   Resources:
